@@ -3,10 +3,7 @@ package;
 import Controls.Control;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxSubState;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
@@ -22,8 +19,11 @@ class PauseSubState extends MusicBeatSubstate
 		'Restart Song',
 		'Change Difficulty',
 		'Toggle Practice Mode',
+		'Toggle Botplay'
 		'Exit to menu'
 	];
+
+
 	var difficultyChoices:Array<String> = ['EASY', 'NORMAL', 'HARD', 'BACK'];
 
 	var menuItems:Array<String> = [];
@@ -32,6 +32,7 @@ class PauseSubState extends MusicBeatSubstate
 	var pauseMusic:FlxSound;
 
 	var practiceText:FlxText;
+	var botText:FlxText;
 
 	public function new(x:Float, y:Float)
 	{
@@ -78,6 +79,14 @@ class PauseSubState extends MusicBeatSubstate
 		practiceText.x = FlxG.width - (practiceText.width + 20);
 		practiceText.visible = PlayState.practiceMode;
 		add(practiceText);
+
+		botText = new FlxText(20, 143, 0, "BOTPLAY", 32);
+		botText.scrollFactor.set();
+		botText.setFormat(Paths.font('vcr.ttf'), 32);
+		botText.updateHitbox();
+		botText.x -= FlxG.width + 20;
+		botText.visible = PlayState.botMode;
+		add(botText);
 
 		levelDifficulty.alpha = 0;
 		levelInfo.alpha = 0;
@@ -158,7 +167,10 @@ class PauseSubState extends MusicBeatSubstate
 				case 'Toggle Practice Mode':
 					PlayState.practiceMode = !PlayState.practiceMode;
 					practiceText.visible = PlayState.practiceMode;
-
+				case "Toggle Botplay":
+					PlayState.botMode = !PlayState.botMode;
+					botText.visible = PlayState.botMode;
+					cast (FlxG.state, PlayState).p1Bot();
 				case 'Change Difficulty':
 					menuItems = difficultyChoices;
 					regenMenu();
